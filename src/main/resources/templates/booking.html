@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title ?: 'Đặt Lịch Hẹn - Nailology'}">Đặt Lịch Hẹn - Nailology</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=Lora:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Lora', serif;
+        }
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Playfair Display', serif;
+        }
+    </style>
+</head>
+<body>
+    <div th:replace="~{fragments/header :: header}"></div>
+    
+    <main class="min-h-screen bg-white">
+        <div class="py-12 px-4 md:px-8">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- Services List -->
+                    <div class="md:col-span-2">
+                        <h1 class="text-4xl font-serif mb-8" style="color: #3d3d3d;">Đặt Lịch Hẹn</h1>
+                        
+                        <!-- Tabs -->
+                        <div class="mb-8">
+                            <div class="flex border-b" style="border-color: #e0e0e0;">
+                                <button onclick="showTab('hands')" 
+                                        id="tab-hands"
+                                        class="px-6 py-3 font-semibold border-b-2 transition"
+                                        style="border-color: #c4a080; color: #c4a080;">
+                                    Tay
+                                </button>
+                                <button onclick="showTab('nailArt')" 
+                                        id="tab-nailArt"
+                                        class="px-6 py-3 font-semibold border-b-2 transition"
+                                        style="border-color: transparent; color: #666;">
+                                    Nail Art
+                                </button>
+                                <button onclick="showTab('feet')" 
+                                        id="tab-feet"
+                                        class="px-6 py-3 font-semibold border-b-2 transition"
+                                        style="border-color: transparent; color: #666;">
+                                    Chân
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content: Hands -->
+                        <div id="content-hands" class="tab-content space-y-4">
+                            <h2 class="text-2xl font-serif mb-4" style="color: #3d3d3d;">Dịch Vụ Tay</h2>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="1" data-service-name="Builder Gel" data-service-price="75" data-service-duration="1 hr" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Builder Gel</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">This is for Builder Gel only. Additional charges for add-ons. Refer to the pricelist. Please add Nail Art to your appointment (if required).</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1 hr</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">75 AUD</span>
+                                </div>
+                            </div>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="2" data-service-name="Builder Gel with Extensions" data-service-price="110" data-service-duration="1 hr 30 min" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Builder Gel with Extensions</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">This is for Builder Gel with Extensions only. Additional charges for add-ons. Refer to the pricelist. Please add Nail Art to your appointment (if required).</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1 hr 30 min</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">110 AUD</span>
+                                </div>
+                            </div>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="3" data-service-name="Gel-X Extensions" data-service-price="77" data-service-duration="1 hr" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Gel-X Extensions</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">This is for Gel-X Extensions only. Please add Nail Art to your appointment (if required).</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1 hr</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">77 AUD</span>
+                                </div>
+                            </div>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="4" data-service-name="Dipping Powder (SNS)" data-service-price="60" data-service-duration="1 hr" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Dipping Powder (SNS)</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">This is for Dipping Powder only. Please add Nail Art to your appointment if required.</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1 hr</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">60 AUD</span>
+                                </div>
+                            </div>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="5" data-service-name="Gel Polish (Shellac)" data-service-price="45" data-service-duration="1 hr" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Gel Polish (Shellac)</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">This is for Gel Polish only. Additional charges for add-ons. Refer to the pricelist. Please add Nail Art to your appointment (if required).</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1 hr</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">45 AUD</span>
+                                </div>
+                            </div>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="6" data-service-name="Nail Polish" data-service-price="37" data-service-duration="45 min" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Nail Polish</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">This is for Nail Polish only. Additional charges for add-ons. Refer to the pricelist. Please add Nail Art to your appointment (if required).</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">45 min</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">37 AUD</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content: Nail Art -->
+                        <div id="content-nailArt" class="tab-content space-y-4 hidden">
+                            <h2 class="text-2xl font-serif mb-4" style="color: #3d3d3d;">Nail Art</h2>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="7" data-service-name="Nail Art - Simple" data-service-price="25" data-service-duration="30 min" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Nail Art - Simple</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">Simple nail art design</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">30 min</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">25 AUD</span>
+                                </div>
+                            </div>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="8" data-service-name="Nail Art - Complex" data-service-price="50" data-service-duration="1 hr" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Nail Art - Complex</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">Complex nail art design</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1 hr</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">50 AUD</span>
+                                </div>
+                            </div>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="9" data-service-name="Custom Design" data-service-price="75" data-service-duration="1.5 hr" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Custom Design</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">Custom nail art design</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1.5 hr</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">75 AUD</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Tab Content: Feet -->
+                        <div id="content-feet" class="tab-content space-y-4 hidden">
+                            <h2 class="text-2xl font-serif mb-4" style="color: #3d3d3d;">Dịch Vụ Chân</h2>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="10" data-service-name="Pedicure - Standard" data-service-price="50" data-service-duration="1 hr" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Pedicure - Standard</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">Standard pedicure service</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1 hr</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">50 AUD</span>
+                                </div>
+                            </div>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="11" data-service-name="Pedicure - Gel" data-service-price="65" data-service-duration="1 hr 15 min" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Pedicure - Gel</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">Gel pedicure service</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1 hr 15 min</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">65 AUD</span>
+                                </div>
+                            </div>
+                            <div class="service-card p-4 cursor-pointer transition-all hover:shadow-md" data-service-id="12" data-service-name="Pedicure - Deluxe" data-service-price="85" data-service-duration="1.5 hr" style="border: 1px solid #e0e0e0; border-radius: 0.5rem; background-color: white;">
+                                <div class="flex justify-between items-start mb-2">
+                                    <h3 class="font-semibold text-lg" style="color: #3d3d3d;">Pedicure - Deluxe</h3>
+                                    <input type="checkbox" class="service-checkbox w-5 h-5 cursor-pointer" style="accent-color: #c4a080;">
+                                </div>
+                                <p class="text-sm mb-3" style="color: #666;">Deluxe pedicure with extras</p>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-sm font-medium" style="color: #888;">1.5 hr</span>
+                                    <span class="font-semibold text-lg" style="color: #c4a080;">85 AUD</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Appointment Summary Sidebar -->
+                    <div>
+                        <div class="sticky top-24 p-6 rounded-lg bg-white border" style="border-color: #e0e0e0;">
+                            <h2 class="text-xl font-serif mb-6" style="color: #3d3d3d;">Tóm Tắt Lịch Hẹn</h2>
+                            
+                            <div id="summary-content">
+                                <p class="text-gray-600 mb-6">Chưa có dịch vụ nào được thêm</p>
+                            </div>
+
+                            <div id="summary-services" class="hidden">
+                                <div id="services-list" class="space-y-4 mb-6 border-b pb-6" style="border-color: #e0e0e0;"></div>
+                                <div class="mb-6 pb-6 border-b" style="border-color: #e0e0e0;">
+                                    <div class="flex justify-between items-center">
+                                        <span class="font-semibold" style="color: #3d3d3d;">Tổng Cộng</span>
+                                        <span id="total-price" class="text-xl font-semibold" style="color: #c4a080;">0 AUD</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button id="continue-btn"
+                                    onclick="handleNext()"
+                                    class="w-full py-3 font-semibold text-white rounded hover:opacity-90 transition"
+                                    style="background-color: #ccc;"
+                                    disabled>
+                                Tiếp Tục
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    
+    <div th:replace="~{fragments/footer :: footer}"></div>
+    
+    <script th:src="@{/js/main.js}"></script>
+    <script th:src="@{/js/booking.js}"></script>
+</body>
+</html>
+

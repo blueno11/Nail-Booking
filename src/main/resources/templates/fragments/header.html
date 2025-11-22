@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <header th:fragment="header" class="bg-white border-b border-gray-200">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <a th:href="@{/}" class="text-2xl font-serif" style="color: #c4a080;">
+                nailology
+            </a>
+            
+            <nav class="hidden md:flex gap-8 items-center">
+                <a href="#services" class="text-sm hover:opacity-70 transition" style="color: #3d3d3d;">DỊCH VỤ</a>
+                <a href="#about" class="text-sm hover:opacity-70 transition" style="color: #3d3d3d;">VỀ CHÚNG TÔI</a>
+                <a href="#gallery" class="text-sm hover:opacity-70 transition" style="color: #3d3d3d;">HÌNH ẢNH</a>
+                <a href="#contact" class="text-sm hover:opacity-70 transition" style="color: #3d3d3d;">LIÊN HỆ</a>
+                <button onclick="showBookingModal()"
+                   class="px-6 py-2 text-white rounded hover:opacity-90 transition"
+                   style="background-color: #c4a080;">
+                    ĐẶT LỊCH
+                </button>
+            </nav>
+
+            <button id="mobileMenuBtn" 
+                    class="md:hidden text-xl">
+                ☰
+            </button>
+
+            <div id="mobileMenu" 
+                 class="hidden absolute top-16 right-4 bg-white border border-gray-200 rounded shadow-lg p-4 z-50">
+                <a href="#services" class="block py-2" style="color: #3d3d3d;">DỊCH VỤ</a>
+                <a href="#about" class="block py-2" style="color: #3d3d3d;">VỀ CHÚNG TÔI</a>
+                <a href="#gallery" class="block py-2" style="color: #3d3d3d;">HÌNH ẢNH</a>
+                <a href="#contact" class="block py-2" style="color: #3d3d3d;">LIÊN HỆ</a>
+                <button onclick="showBookingModal()"
+                   class="block w-full mt-4 px-6 py-2 text-white rounded hover:opacity-90 transition text-center"
+                   style="background-color: #c4a080;">
+                    ĐẶT LỊCH
+                </button>
+            </div>
+        </div>
+    </header>
+</body>
+</html>
+
