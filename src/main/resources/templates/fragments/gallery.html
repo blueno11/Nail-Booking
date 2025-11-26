@@ -10,56 +10,29 @@
                 </h2>
             </div>
 
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                <div class="relative bg-gray-200 rounded h-64 overflow-hidden hover:shadow-lg transition hover:scale-105 duration-300 group">
-                    <img th:src="@{/images/placeholder.jpg}" 
-                         alt="Nail Art Hoa"
+            <div th:if="${galleryItems and #lists.size(galleryItems) > 0}"
+                 class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div th:each="item : ${galleryItems}"
+                     class="relative bg-gray-200 rounded h-64 overflow-hidden hover:shadow-lg transition hover:scale-105 duration-300 group">
+                    <img th:src="${item.imageUrl}"
+                         th:alt="${item.title}"
                          class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
                     <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-end p-4">
-                        <p class="text-white font-serif text-lg opacity-0 group-hover:opacity-100 transition">Nail Art Hoa</p>
-                    </div>
-                </div>
-                <div class="relative bg-gray-200 rounded h-64 overflow-hidden hover:shadow-lg transition hover:scale-105 duration-300 group">
-                    <img th:src="@{/images/placeholder.jpg}" 
-                         alt="Ombre Gradient"
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-end p-4">
-                        <p class="text-white font-serif text-lg opacity-0 group-hover:opacity-100 transition">Ombre Gradient</p>
-                    </div>
-                </div>
-                <div class="relative bg-gray-200 rounded h-64 overflow-hidden hover:shadow-lg transition hover:scale-105 duration-300 group">
-                    <img th:src="@{/images/placeholder.jpg}" 
-                         alt="Geometric Pattern"
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-end p-4">
-                        <p class="text-white font-serif text-lg opacity-0 group-hover:opacity-100 transition">Geometric Pattern</p>
-                    </div>
-                </div>
-                <div class="relative bg-gray-200 rounded h-64 overflow-hidden hover:shadow-lg transition hover:scale-105 duration-300 group">
-                    <img th:src="@{/images/placeholder.jpg}" 
-                         alt="Glitter Sparkle"
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-end p-4">
-                        <p class="text-white font-serif text-lg opacity-0 group-hover:opacity-100 transition">Glitter Sparkle</p>
-                    </div>
-                </div>
-                <div class="relative bg-gray-200 rounded h-64 overflow-hidden hover:shadow-lg transition hover:scale-105 duration-300 group">
-                    <img th:src="@{/images/placeholder.jpg}" 
-                         alt="French Tip Classic"
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-end p-4">
-                        <p class="text-white font-serif text-lg opacity-0 group-hover:opacity-100 transition">French Tip Classic</p>
-                    </div>
-                </div>
-                <div class="relative bg-gray-200 rounded h-64 overflow-hidden hover:shadow-lg transition hover:scale-105 duration-300 group">
-                    <img th:src="@{/images/placeholder.jpg}" 
-                         alt="Holographic Design"
-                         class="w-full h-full object-cover group-hover:scale-110 transition duration-300">
-                    <div class="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition flex items-end p-4">
-                        <p class="text-white font-serif text-lg opacity-0 group-hover:opacity-100 transition">Holographic Design</p>
+                        <div>
+                            <p class="text-white font-serif text-lg opacity-0 group-hover:opacity-100 transition"
+                               th:text="${item.title}">Nail Art</p>
+                            <p class="text-white text-sm opacity-0 group-hover:opacity-100 transition delay-75"
+                               th:text="${item.caption}">
+                                Caption
+                            </p>
+                        </div>
                     </div>
                 </div>
             </div>
+            <p th:if="${galleryItems == null or #lists.isEmpty(galleryItems)}"
+               class="text-center text-gray-500">
+                Bộ sưu tập sẽ được hiển thị ngay khi có nội dung.
+            </p>
         </div>
     </section>
 </body>
