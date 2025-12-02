@@ -1,0 +1,76 @@
+-- 1. Tạo database và chọn database
+CREATE DATABASE IF NOT EXISTS nailology
+  DEFAULT CHARACTER SET utf8mb4
+  COLLATE utf8mb4_unicode_ci;
+USE nailology;
+
+-- 2. Bảng địa điểm
+CREATE TABLE locations (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    suburb VARCHAR(120),
+    postcode VARCHAR(10),
+    address VARCHAR(255),
+    phone VARCHAR(50),
+    email VARCHAR(120),
+    status VARCHAR(20) NOT NULL,
+    highlight VARCHAR(512),
+    coffee_available BIT DEFAULT b'1',
+    display_order INT DEFAULT 0
+);
+
+-- 3. Bảng dịch vụ và bảng phụ liên kết dịch vụ - địa điểm
+CREATE TABLE services (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(150) NOT NULL,
+    category_label VARCHAR(100),
+    category VARCHAR(20) NOT NULL,
+    description VARCHAR(800),
+    duration_label VARCHAR(50),
+    duration_minutes INT,
+    starting_price DECIMAL(10,2),
+    homepage_featured BIT DEFAULT b'0',
+    is_builder_gel BIT DEFAULT b'0',
+    display_order INT DEFAULT 0
+);
+
+CREATE TABLE service_locations (
+    service_id BIGINT NOT NULL,
+    location_id BIGINT NOT NULL,
+    PRIMARY KEY (service_id, location_id),
+    CONSTRAINT fk_service_locations_service FOREIGN KEY (service_id) REFERENCES services(id),
+    CONSTRAINT fk_service_locations_location FOREIGN KEY (location_id) REFERENCES locations(id)
+);
+
+-- 4. Bộ sưu tập ảnh
+CREATE TABLE gallery_items (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(150),
+    caption VARCHAR(512),
+    image_url VARCHAR(255),
+    type VARCHAR(20),
+    display_order INT DEFAULT 0
+);
+
+-- 5. Thông báo đầu trang
+CREATE TABLE announcements (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    title VARCHAR(200),
+    content VARCHAR(800),
+    cta_label VARCHAR(100),
+    cta_url VARCHAR(255),
+    active BIT DEFAULT b'1',
+    start_date DATE,
+    end_date DATE,
+    priority INT DEFAULT 0
+);
+
+-- 6. Form liên hệ
+CREATE TABLE contact_messages (
+    id BIGINT PRIMARY KEY AUTO_INCREMENT,
+    name VARCHAR(150) NOT NULL,
+    email VARCHAR(150) NOT NULL,
+    message VARCHAR(2000) NOT NULL,
+    status VARCHAR(20) NOT NULL,
+    created_at DATETIME
+);
