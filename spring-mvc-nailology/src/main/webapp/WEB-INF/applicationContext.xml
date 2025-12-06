@@ -8,15 +8,19 @@
         http://www.springframework.org/schema/context https://www.springframework.org/schema/context/spring-context.xsd
         http://www.springframework.org/schema/tx https://www.springframework.org/schema/tx/spring-tx.xsd">
 
-    <!-- Component Scan -->
-    <context:component-scan base-package="com.nailology" />
+    <!-- Component Scan with explicit includes -->
+    <context:component-scan base-package="com.nailology">
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Service"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Repository"/>
+        <context:include-filter type="annotation" expression="org.springframework.stereotype.Component"/>
+    </context:component-scan>
 
     <!-- DataSource -->
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource">
         <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
         <property name="url" value="jdbc:mysql://localhost:3306/nailology?useSSL=false&amp;serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=UTF-8&amp;allowPublicKeyRetrieval=true"/>
         <property name="username" value="root"/>
-        <property name="password" value="admin"/>
+        <property name="password" value="12345"/>
     </bean>
 
     <!-- Session Factory -->
@@ -41,7 +45,7 @@
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-    <!-- Enable Transaction Management -->
-    <tx:annotation-driven transaction-manager="transactionManager"/>
+    <!-- Enable Transaction Management with CGLIB Proxy and Propagation -->
+    <tx:annotation-driven transaction-manager="transactionManager" proxy-target-class="true" mode="proxy"/>
 
 </beans>
