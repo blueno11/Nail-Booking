@@ -340,7 +340,7 @@
                 </div>
                 <div class="stat-box">
                     <c:if test="${not empty customer.lastVisitDate}">
-                        <div class="stat-value"><fmt:formatDate value="${customer.lastVisitDate}" pattern="dd/MM"/></div>
+                        <div class="stat-value"><fmt:formatDate value="${customer.lastVisitDate}" pattern="dd/MM/yyyy"/></div>
                         <div class="stat-label">Lần Truy Cập Cuối</div>
                     </c:if>
                     <c:if test="${empty customer.lastVisitDate}">
