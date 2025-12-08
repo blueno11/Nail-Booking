@@ -4,7 +4,7 @@
 
 ## Công Nghệ Sử Dụng
 
-- **Java 11**
+- **Java 21**
 - **Spring MVC 5.3.23**
 - **Hibernate 5.6.14**
 - **MySQL 8.0**
@@ -13,7 +13,7 @@
 
 ## Yêu Cầu Hệ Thống
 
-- JDK 11+
+- JDK 21+
 - Apache Maven 3.6+
 - Apache Tomcat 9.0+
 - MySQL 8.0+
