@@ -48,6 +48,11 @@ public class Booking {
 	@JoinColumn(name = "staff_id", nullable = true)
 	private Staff staff;
 
+	// --- Mối quan hệ N-1: Chi nhánh/địa điểm (Location) ---
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "location_id", nullable = true)
+	private Location location;
+
 	// --- Mối quan hệ N-N: Liên kết với ServiceEntity (Các Dịch vụ được đặt) ---
 	// Sử dụng @ManyToMany đơn giản, tạo bảng trung gian 'booking_service'
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -107,6 +112,14 @@ public class Booking {
 
 	public void setStaff(Staff staff) {
 		this.staff = staff;
+	}
+
+	public Location getLocation() {
+		return location;
+	}
+
+	public void setLocation(Location location) {
+		this.location = location;
 	}
 
 	public List<ServiceEntity> getServices() {

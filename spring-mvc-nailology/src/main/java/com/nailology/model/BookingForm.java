@@ -10,6 +10,8 @@ public class BookingForm {
     private String date;
     private String time;
     private List<Integer> selectedServiceIds;
+    private Long staffId;
+    private Long locationId;
     private String message;
 
     public BookingForm() {
@@ -70,6 +72,22 @@ public class BookingForm {
 
     public void setSelectedServiceIds(List<Integer> selectedServiceIds) {
         this.selectedServiceIds = selectedServiceIds;
+    }
+
+    public Long getStaffId() {
+        return staffId;
+    }
+
+    public void setStaffId(Long staffId) {
+        this.staffId = staffId;
+    }
+
+    public Long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(Long locationId) {
+        this.locationId = locationId;
     }
 
     public String getMessage() {
