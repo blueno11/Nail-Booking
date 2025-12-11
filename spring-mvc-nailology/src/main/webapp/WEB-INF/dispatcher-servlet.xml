@@ -10,9 +10,8 @@
        http://www.springframework.org/schema/mvc
        http://www.springframework.org/schema/mvc/spring-mvc.xsd">
 
-    <!-- Component Scan -->
+    <!-- Component Scan - Only controllers here, services are in applicationContext -->
     <context:component-scan base-package="com.nailology.controller" />
-    <context:component-scan base-package="com.nailology.service" />
 
     <!-- Enable Spring MVC Annotations -->
     <mvc:annotation-driven />
