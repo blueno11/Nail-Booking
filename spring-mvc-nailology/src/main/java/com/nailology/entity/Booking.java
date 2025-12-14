@@ -1,119 +1,153 @@
 package com.nailology.entity;
 
-import java.util.Date;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import javax.persistence.*;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
-@Table(name = "booking")
+@Table(name = "bookings")
 public class Booking {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-	@Column(name = "booking_date_time", nullable = false)
-	@Temporal(TemporalType.TIMESTAMP) // Lưu trữ cả ngày và giờ
-	private Date bookingDateTime;
+    @Column(name = "customer_name", nullable = false, length = 150)
+    private String customerName;
 
-	@Column(name = "total_amount")
-	private Double totalAmount;
+    @Column(name = "email", nullable = false, length = 150)
+    private String email;
 
-	// Ví dụ về các trạng thái: PENDING, CONFIRMED, COMPLETED, CANCELLED
-	@Column(name = "status", length = 20, nullable = false)
-	private String status = "PENDING";
+    @Column(name = "phone", length = 50)
+    private String phone;
 
-	// --- Mối quan hệ N-1: Liên kết với Customer (Khách hàng) ---
-	// Đây là mối liên kết cho phép theo dõi lịch sử dịch vụ
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "customer_id", nullable = true)
-	private Customer customer; // nullable=true cho phép đặt lịch với tư cách khách vãng lai
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "customer_id")
+    private Customer customer;
 
-	// --- Mối quan hệ N-1: Liên kết với Staff (Thợ) ---
-	// Giả định một thợ chính chịu trách nhiệm cho Booking này
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "staff_id", nullable = true)
-	private Staff staff;
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "location_id", nullable = false)
+    private Location location;
 
-	// --- Mối quan hệ N-N: Liên kết với ServiceEntity (Các Dịch vụ được đặt) ---
-	// Sử dụng @ManyToMany đơn giản, tạo bảng trung gian 'booking_service'
-	@ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "booking_service", joinColumns = @JoinColumn(name = "booking_id"), inverseJoinColumns = @JoinColumn(name = "service_id"))
-	private List<ServiceEntity> services;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "booking_services",
+        joinColumns = @JoinColumn(name = "booking_id"),
+        inverseJoinColumns = @JoinColumn(name = "service_id"))
+    private Set<ServiceEntity> services = new HashSet<>();
 
-	// --- Constructors ---
-	public Booking() {
-		this.bookingDateTime = new Date(); // Khởi tạo thời gian đặt mặc định
-	}
+    @Column(name = "booking_date", nullable = false)
+    private LocalDate bookingDate;
 
-	// --- Getters and Setters ---
+    @Column(name = "booking_time", nullable = false)
+    private LocalTime bookingTime;
 
-	public Long getId() {
-		return id;
-	}
+    @Column(name = "service_ids", length = 500)
+    private String serviceIds;
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Column(name = "service_names", length = 1000)
+    private String serviceNames;
 
-	public Date getBookingDateTime() {
-		return bookingDateTime;
-	}
+    @Column(name = "total_price", precision = 10, scale = 2)
+    private BigDecimal totalPrice;
 
-	public void setBookingDateTime(Date bookingDateTime) {
-		this.bookingDateTime = bookingDateTime;
-	}
+    @Column(name = "total_duration_minutes")
+    private Integer totalDurationMinutes;
 
-	public Double getTotalAmount() {
-		return totalAmount;
-	}
+    @Column(name = "message", length = 2000)
+    private String message;
 
-	public void setTotalAmount(Double totalAmount) {
-		this.totalAmount = totalAmount;
-	}
+    @Enumerated(EnumType.STRING)
+    @Column(name = "status", nullable = false, length = 20)
+    private BookingStatus status = BookingStatus.PENDING;
 
-	public String getStatus() {
-		return status;
-	}
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+    @Column(name = "booking_code", unique = true, length = 20)
+    private String bookingCode;
 
-	public Customer getCustomer() {
-		return customer;
-	}
+    @Column(name = "created_at")
+    private LocalDateTime createdAt;
 
-	public void setCustomer(Customer customer) {
-		this.customer = customer;
-	}
+    @Column(name = "updated_at")
+    private LocalDateTime updatedAt;
 
-	public Staff getStaff() {
-		return staff;
-	}
+    public enum BookingStatus {
+        PENDING, CONFIRMED, CANCELLED, COMPLETED
+    }
 
-	public void setStaff(Staff staff) {
-		this.staff = staff;
-	}
+    @PrePersist
+    protected void onCreate() {
+        createdAt = LocalDateTime.now();
+        updatedAt = LocalDateTime.now();
+        if (bookingCode == null) {
+            bookingCode = generateBookingCode();
+        }
+    }
 
-	public List<ServiceEntity> getServices() {
-		return services;
-	}
+    @PreUpdate
+    protected void onUpdate() {
+        updatedAt = LocalDateTime.now();
+    }
 
-	public void setServices(List<ServiceEntity> services) {
-		this.services = services;
-	}
+    private String generateBookingCode() {
+        return "NL" + System.currentTimeMillis() % 100000000;
+    }
+
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getCustomerName() { return customerName; }
+    public void setCustomerName(String customerName) { this.customerName = customerName; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public Location getLocation() { return location; }
+    public void setLocation(Location location) { this.location = location; }
+
+    public LocalDate getBookingDate() { return bookingDate; }
+    public void setBookingDate(LocalDate bookingDate) { this.bookingDate = bookingDate; }
+
+    public LocalTime getBookingTime() { return bookingTime; }
+    public void setBookingTime(LocalTime bookingTime) { this.bookingTime = bookingTime; }
+
+    public String getServiceIds() { return serviceIds; }
+    public void setServiceIds(String serviceIds) { this.serviceIds = serviceIds; }
+
+    public String getServiceNames() { return serviceNames; }
+    public void setServiceNames(String serviceNames) { this.serviceNames = serviceNames; }
+
+    public BigDecimal getTotalPrice() { return totalPrice; }
+    public void setTotalPrice(BigDecimal totalPrice) { this.totalPrice = totalPrice; }
+
+    public Integer getTotalDurationMinutes() { return totalDurationMinutes; }
+    public void setTotalDurationMinutes(Integer totalDurationMinutes) { this.totalDurationMinutes = totalDurationMinutes; }
+
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+
+    public BookingStatus getStatus() { return status; }
+    public void setStatus(BookingStatus status) { this.status = status; }
+
+    public String getBookingCode() { return bookingCode; }
+    public void setBookingCode(String bookingCode) { this.bookingCode = bookingCode; }
+
+    public LocalDateTime getCreatedAt() { return createdAt; }
+    public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public LocalDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(LocalDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public Customer getCustomer() { return customer; }
+    public void setCustomer(Customer customer) { this.customer = customer; }
+
+    public Set<ServiceEntity> getServices() { return services; }
+    public void setServices(Set<ServiceEntity> services) { this.services = services; }
 }

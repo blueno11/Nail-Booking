@@ -7,6 +7,7 @@ public class BookingForm {
     private String email;
     private String phone;
     private String location;
+    private Long locationId;
     private String date;
     private String time;
     private List<Integer> selectedServiceIds;
@@ -46,6 +47,14 @@ public class BookingForm {
 
     public void setLocation(String location) {
         this.location = location;
+    }
+
+    public Long getLocationId() {
+        return locationId;
+    }
+
+    public void setLocationId(Long locationId) {
+        this.locationId = locationId;
     }
 
     public String getDate() {
