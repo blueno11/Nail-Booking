@@ -1,52 +1,67 @@
 package com.nailology.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "staff")
 public class Staff {
 
-	@Id
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id")
+    private Long id;
 
-	@Column(name = "name", nullable = false)
-	private String name;
+    @Column(name = "name", nullable = false, length = 100)
+    private String name;
 
-	@Column(name = "specialization")
-	private String specialization;
+    @Column(name = "phone", length = 50)
+    private String phone;
 
-	// --- Constructors ---
-	public Staff() {
-	}
+    @Column(name = "email", length = 120)
+    private String email;
 
-	// --- Getters and Setters ---
-	public Long getId() {
-		return id;
-	}
+    @Column(name = "status", length = 20)
+    private String status = "ACTIVE"; // ACTIVE, INACTIVE
 
-	public void setId(Long id) {
-		this.id = id;
-	}
+    @Column(name = "display_order")
+    private Integer displayOrder = 0;
 
-	public String getName() {
-		return name;
-	}
+    @ManyToMany
+    @JoinTable(
+            name = "staff_locations",
+            joinColumns = @JoinColumn(name = "staff_id"),
+            inverseJoinColumns = @JoinColumn(name = "location_id")
+    )
+    private Set<Location> locations = new HashSet<>();
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    // Constructors
+    public Staff() {}
 
-	public String getSpecialization() {
-		return specialization;
-	}
+    public Staff(String name) {
+        this.name = name;
+    }
 
-	public void setSpecialization(String specialization) {
-		this.specialization = specialization;
-	}
+    // Getters and Setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getName() { return name; }
+    public void setName(String name) { this.name = name; }
+
+    public String getPhone() { return phone; }
+    public void setPhone(String phone) { this.phone = phone; }
+
+    public String getEmail() { return email; }
+    public void setEmail(String email) { this.email = email; }
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public Integer getDisplayOrder() { return displayOrder; }
+    public void setDisplayOrder(Integer displayOrder) { this.displayOrder = displayOrder; }
+
+    public Set<Location> getLocations() { return locations; }
+    public void setLocations(Set<Location> locations) { this.locations = locations; }
 }
