@@ -7,7 +7,7 @@
             <a href="${pageContext.request.contextPath}/" class="logo">nailology</a>
             
             <nav class="nav-desktop">
-                <a href="#services" class="nav-link">DỊCH VỤ</a>
+                <a href="${pageContext.request.contextPath}/builder-gels" class="nav-link">DỊCH VỤ</a>
                 <a href="#about" class="nav-link">VỀ CHÚNG TÔI</a>
                 <a href="#gallery" class="nav-link">HÌNH ẢNH</a>
                 <a href="#contact" class="nav-link">LIÊN HỆ</a>

@@ -40,4 +40,42 @@ public class ServiceRepository {
         query.setParameter("ids", ids);
         return query.getResultList();
     }
+   
+    public List<ServiceEntity> findAllBuilderGels() {
+       Query<ServiceEntity> query = getCurrentSession()
+           .createQuery("FROM ServiceEntity WHERE isBuilderGel = true ORDER BY displayOrder", 
+                       ServiceEntity.class);
+       return query.getResultList();
+   }
+   
+   /**
+    * Lấy builder gel services theo location
+    */
+   public List<ServiceEntity> findBuilderGelsByLocation(Long locationId) {
+       String hql = "SELECT DISTINCT s FROM ServiceEntity s " +
+                    "JOIN s.locations l " +
+                    "WHERE s.isBuilderGel = true AND l.id = :locationId " +
+                    "ORDER BY s.displayOrder";
+       
+       Query<ServiceEntity> query = getCurrentSession()
+           .createQuery(hql, ServiceEntity.class);
+       query.setParameter("locationId", locationId);
+       
+       return query.getResultList();
+   }
+   
+   /**
+    * Lấy tất cả builder gel services với locations (eager fetch để tránh N+1)
+    */
+   public List<ServiceEntity> findAllBuilderGelsWithLocations() {
+       String hql = "SELECT DISTINCT s FROM ServiceEntity s " +
+                    "LEFT JOIN FETCH s.locations " +
+                    "WHERE s.isBuilderGel = true " +
+                    "ORDER BY s.displayOrder";
+       
+       Query<ServiceEntity> query = getCurrentSession()
+           .createQuery(hql, ServiceEntity.class);
+       
+       return query.getResultList();
+   }
 }

@@ -30,4 +30,5 @@ public class LocationRepository {
         Location location = getCurrentSession().get(Location.class, id);
         return Optional.ofNullable(location);
     }
+    
 }
