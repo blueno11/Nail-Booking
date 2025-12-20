@@ -116,6 +116,39 @@
             <artifactId>logback-classic</artifactId>
             <version>1.2.11</version>
         </dependency>
+     <dependency>
+    <groupId>com.group7</groupId>
+    <artifactId>DMS</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+    <exclusions>
+        <!-- Exclude tất cả các artifact Spring Boot có thể có logging -->
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>*</artifactId>
+        </exclusion>
+        <!-- Nếu cần exclude cụ thể hơn (nếu vẫn lỗi) -->
+        <!--
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </exclusion>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+        </exclusion>
+        -->
+    </exclusions>
+</dependency>
+<!-- Spring Data JPA -->
+<dependency>
+    <groupId>org.springframework.data</groupId>
+    <artifactId>spring-data-jpa</artifactId>
+    <version>2.7.18</version> <!-- Phiên bản tương thích Spring 5.3.x -->
+</dependency>
     </dependencies>
 
     <build>
