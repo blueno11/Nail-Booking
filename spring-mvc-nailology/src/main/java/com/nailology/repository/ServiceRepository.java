@@ -31,6 +31,18 @@ public class ServiceRepository {
         return Optional.ofNullable(service);
     }
 
+    public void save(ServiceEntity service) {
+        getCurrentSession().saveOrUpdate(service);
+    }
+
+    public void delete(Long id) {
+        ServiceEntity service = getCurrentSession().get(ServiceEntity.class, id);
+        if (service != null) {
+            service.getLocations().clear();
+            getCurrentSession().delete(service);
+        }
+    }
+
     public List<ServiceEntity> findByIds(List<Long> ids) {
         if (ids == null || ids.isEmpty()) {
             return List.of();

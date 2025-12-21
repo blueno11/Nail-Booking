@@ -12,6 +12,17 @@
                 <a href="#gallery" class="nav-link">HÌNH ẢNH</a>
                 <a href="#contact" class="nav-link">LIÊN HỆ</a>
                 <a href="${pageContext.request.contextPath}/booking" class="btn btn-primary">ĐẶT LỊCH</a>
+                
+                <c:choose>
+                    <c:when test="${not empty sessionScope.staffId}">
+                        <a href="${pageContext.request.contextPath}/staff/dashboard" class="nav-link" style="margin-left:1rem;">
+                            👤 ${sessionScope.staffName}
+                        </a>
+                    </c:when>
+                    <c:otherwise>
+                        <a href="${pageContext.request.contextPath}/staff/login" class="nav-link" style="margin-left:1rem;">ĐĂNG NHẬP</a>
+                    </c:otherwise>
+                </c:choose>
             </nav>
 
             <button class="menu-toggle" id="menuToggle">☰</button>
@@ -23,6 +34,16 @@
             <a href="#gallery" class="nav-link">HÌNH ẢNH</a>
             <a href="#contact" class="nav-link">LIÊN HỆ</a>
             <a href="${pageContext.request.contextPath}/booking" class="btn btn-primary">ĐẶT LỊCH</a>
+            
+            <c:choose>
+                <c:when test="${not empty sessionScope.staffId}">
+                    <a href="${pageContext.request.contextPath}/staff/dashboard" class="nav-link">👤 ${sessionScope.staffName}</a>
+                    <a href="${pageContext.request.contextPath}/staff/logout" class="nav-link">Đăng xuất</a>
+                </c:when>
+                <c:otherwise>
+                    <a href="${pageContext.request.contextPath}/staff/login" class="nav-link">ĐĂNG NHẬP</a>
+                </c:otherwise>
+            </c:choose>
         </div>
     </div>
 </header>

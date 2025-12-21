@@ -60,9 +60,18 @@
 <body>
 <jsp:include page="/WEB-INF/views/layout/header.jsp" />
     <div class="container admin-container">
-        <h1 class="admin-title">Quản lý Nhân viên</h1>
+        <div class="admin-nav" style="display:flex;gap:0.5rem;flex-wrap:wrap;margin-bottom:1.5rem;">
+            <a href="${pageContext.request.contextPath}/admin/services" style="padding:0.5rem 1rem;background:var(--background);border-radius:0.375rem;text-decoration:none;color:var(--text-color);font-size:0.875rem;">Dịch vụ</a>
+            <a href="${pageContext.request.contextPath}/admin/locations" style="padding:0.5rem 1rem;background:var(--background);border-radius:0.375rem;text-decoration:none;color:var(--text-color);font-size:0.875rem;">Chi nhánh</a>
+            <a href="${pageContext.request.contextPath}/admin/gallery" style="padding:0.5rem 1rem;background:var(--background);border-radius:0.375rem;text-decoration:none;color:var(--text-color);font-size:0.875rem;">Gallery</a>
+            <a href="${pageContext.request.contextPath}/admin/announcements" style="padding:0.5rem 1rem;background:var(--background);border-radius:0.375rem;text-decoration:none;color:var(--text-color);font-size:0.875rem;">Thông báo</a>
+            <a href="${pageContext.request.contextPath}/admin/staff" style="padding:0.5rem 1rem;background:var(--primary-color);border-radius:0.375rem;text-decoration:none;color:white;font-size:0.875rem;">Nhân viên</a>
+        </div>
 
-        <a href="${pageContext.request.contextPath}/admin/staff/edit?id=0" class="btn btn-primary btn-add">Thêm nhân viên mới</a>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1.5rem;flex-wrap:wrap;gap:1rem;">
+            <h1 class="admin-title" style="margin:0;">Quản lý Nhân viên</h1>
+            <a href="${pageContext.request.contextPath}/admin/staff/edit?id=0" class="btn btn-primary">+ Thêm nhân viên</a>
+        </div>
 
         <table>
             <thead>
@@ -71,6 +80,7 @@
                     <th>Tên</th>
                     <th>SĐT</th>
                     <th>Email</th>
+                    <th>Vai trò</th>
                     <th>Trạng thái</th>
                     <th>Chi nhánh</th>
                     <th>Hành động</th>
@@ -83,6 +93,11 @@
                         <td><strong>${s.name}</strong></td>
                         <td>${s.phone}</td>
                         <td>${s.email}</td>
+                        <td>
+                            <span style="padding:0.25rem 0.5rem; border-radius:0.25rem; font-size:0.75rem; font-weight:600; background:${s.role == 'ADMIN' ? '#f3e8ff' : '#e0f2fe'}; color:${s.role == 'ADMIN' ? '#9333ea' : '#0369a1'};">
+                                ${s.role == 'ADMIN' ? 'Admin' : 'Staff'}
+                            </span>
+                        </td>
                         <td>
                             <span style="color: ${s.status == 'ACTIVE' ? '#27ae60' : '#e74c3c'}; font-weight:600;">
                                 ${s.status}
@@ -109,7 +124,7 @@
                 </c:forEach>
                 <c:if test="${empty staffList}">
                     <tr>
-                        <td colspan="7" style="text-align:center; padding:2rem; color:#999;">
+                        <td colspan="8" style="text-align:center; padding:2rem; color:#999;">
                             Chưa có nhân viên nào. <a href="${pageContext.request.contextPath}/admin/staff/edit?id=0">Thêm nhân viên đầu tiên</a>
                         </td>
                     </tr>

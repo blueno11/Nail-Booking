@@ -83,6 +83,17 @@ public class CustomerService {
     }
 
     /**
+     * Lấy khách hàng theo trạng thái
+     */
+    public List<Customer> getCustomersByStatus(String status) {
+        Session session = sessionFactory.getCurrentSession();
+        Query<Customer> query = session.createQuery(
+            "FROM Customer WHERE status = :status ORDER BY fullName", Customer.class);
+        query.setParameter("status", status);
+        return query.getResultList();
+    }
+
+    /**
      * Lấy tất cả khách hàng
      */
     public List<Customer> getAllCustomers() {

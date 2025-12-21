@@ -33,6 +33,16 @@ public class Booking {
     @JoinColumn(name = "location_id", nullable = false)
     private Location location;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "assigned_staff_id")
+    private Staff assignedStaff;
+
+    @Column(name = "confirmed_by_staff_id")
+    private Long confirmedByStaffId;
+
+    @Column(name = "confirmed_at")
+    private LocalDateTime confirmedAt;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "booking_services",
         joinColumns = @JoinColumn(name = "booking_id"),
@@ -111,6 +121,15 @@ public class Booking {
 
     public Location getLocation() { return location; }
     public void setLocation(Location location) { this.location = location; }
+
+    public Staff getAssignedStaff() { return assignedStaff; }
+    public void setAssignedStaff(Staff assignedStaff) { this.assignedStaff = assignedStaff; }
+
+    public Long getConfirmedByStaffId() { return confirmedByStaffId; }
+    public void setConfirmedByStaffId(Long confirmedByStaffId) { this.confirmedByStaffId = confirmedByStaffId; }
+
+    public LocalDateTime getConfirmedAt() { return confirmedAt; }
+    public void setConfirmedAt(LocalDateTime confirmedAt) { this.confirmedAt = confirmedAt; }
 
     public LocalDate getBookingDate() { return bookingDate; }
     public void setBookingDate(LocalDate bookingDate) { this.bookingDate = bookingDate; }

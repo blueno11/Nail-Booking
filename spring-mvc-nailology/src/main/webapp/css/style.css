@@ -942,6 +942,17 @@ section {
     border-color: var(--primary-color);
 }
 
+.time-slot.disabled .time-slot-label {
+    background-color: #f0f0f0;
+    color: #999;
+    cursor: not-allowed;
+    border-color: #ddd;
+}
+
+.time-slot.disabled .time-slot-label:hover {
+    border-color: #ddd;
+}
+
 /* Buttons */
 .btn-secondary {
     background-color: var(--white);

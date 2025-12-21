@@ -151,32 +151,15 @@
 
                             <div class="form-group">
                                 <label for="date">Ngày hẹn <span class="required">*</span></label>
-                                <input type="date" name="date" id="date" class="form-control" required 
-                                       min="${java.time.LocalDate.now()}">
+                                <input type="date" name="date" id="date" class="form-control" required>
                             </div>
 
                             <div class="form-group">
                                 <label>Giờ hẹn <span class="required">*</span></label>
-                                <div class="time-slots">
-                                    <c:forEach var="slot" items="${timeSlots}">
-                                        <label class="time-slot">
-                                            <input type="radio" name="time" value="${slot}" required>
-                                            <span class="time-slot-label">${slot}</span>
-                                        </label>
-                                    </c:forEach>
-                                    <c:if test="${empty timeSlots}">
-                                        <c:forEach var="h" begin="9" end="17">
-                                            <label class="time-slot">
-                                                <input type="radio" name="time" value="${h < 10 ? '0' : ''}${h}:00" required>
-                                                <span class="time-slot-label">${h < 10 ? '0' : ''}${h}:00</span>
-                                            </label>
-                                            <label class="time-slot">
-                                                <input type="radio" name="time" value="${h < 10 ? '0' : ''}${h}:30" required>
-                                                <span class="time-slot-label">${h < 10 ? '0' : ''}${h}:30</span>
-                                            </label>
-                                        </c:forEach>
-                                    </c:if>
+                                <div id="timeSlotsContainer" class="time-slots">
+                                    <p style="color:#666; padding:1rem 0;">Vui lòng chọn chi nhánh và ngày để xem khung giờ khả dụng.</p>
                                 </div>
+                                <input type="hidden" name="time" id="selectedTime" required>
                             </div>
 
                             <div class="step-actions">
@@ -276,6 +259,63 @@
         document.getElementById('backToStep1').addEventListener('click', () => showStep(1));
         document.getElementById('backToStep2').addEventListener('click', () => showStep(2));
 
+        // Tính tổng thời gian dịch vụ đã chọn
+        function getTotalDuration() {
+            let total = 0;
+            document.querySelectorAll('.service-checkbox:checked').forEach(cb => {
+                const card = cb.closest('.service-card-booking');
+                const duration = parseInt(card.getAttribute('data-duration')) || 60;
+                total += duration;
+            });
+            return total || 60; // Mặc định 60 phút
+        }
+
+        // Load time slots động từ API
+        async function loadTimeSlots() {
+            const locationId = document.getElementById('locationId').value;
+            const date = document.getElementById('date').value;
+            const container = document.getElementById('timeSlotsContainer');
+            
+            if (!locationId || !date) {
+                container.innerHTML = '<p style="color:#666; padding:1rem 0;">Vui lòng chọn chi nhánh và ngày để xem khung giờ khả dụng.</p>';
+                document.getElementById('selectedTime').value = '';
+                validateStep2();
+                return;
+            }
+
+            container.innerHTML = '<p style="color:#666; padding:1rem 0;">Đang tải khung giờ...</p>';
+
+            try {
+                const duration = getTotalDuration();
+                const response = await fetch('${pageContext.request.contextPath}/api/booking/slots?locationId=' + locationId + '&date=' + date + '&duration=' + duration);
+                const slots = await response.json();
+
+                if (slots.length === 0) {
+                    container.innerHTML = '<p style="color:#e74c3c; padding:1rem 0;">Không có khung giờ khả dụng cho ngày này. Vui lòng chọn ngày khác.</p>';
+                    return;
+                }
+
+                let html = '';
+                slots.forEach(slot => {
+                    const availableClass = slot.available ? '' : 'disabled';
+                    const disabledAttr = slot.available ? '' : 'disabled';
+                    html += '<label class="time-slot ' + availableClass + '">' +
+                            '<input type="radio" name="timeRadio" value="' + slot.time + '" ' + disabledAttr + ' onchange="selectTime(this.value)">' +
+                            '<span class="time-slot-label">' + slot.time + (slot.available ? '' : ' (Hết)') + '</span>' +
+                            '</label>';
+                });
+                container.innerHTML = html;
+            } catch (error) {
+                console.error('Error loading slots:', error);
+                container.innerHTML = '<p style="color:#e74c3c; padding:1rem 0;">Lỗi tải khung giờ. Vui lòng thử lại.</p>';
+            }
+        }
+
+        function selectTime(time) {
+            document.getElementById('selectedTime').value = time;
+            validateStep2();
+        }
+
         // Update summary
         function updateSummary() {
             const checkboxes = document.querySelectorAll('.service-checkbox:checked');
@@ -304,6 +344,11 @@
             
             document.getElementById('totalPriceDesktop').textContent = total + ' AUD';
             document.getElementById('toStep2').disabled = items.length === 0;
+
+            // Reload slots nếu đã chọn location và date (vì duration thay đổi)
+            if (document.getElementById('locationId').value && document.getElementById('date').value) {
+                loadTimeSlots();
+            }
         }
         
         document.querySelectorAll('.service-checkbox').forEach(cb => {
@@ -314,7 +359,7 @@
         function validateStep2() {
             const location = document.getElementById('locationId').value;
             const date = document.getElementById('date').value;
-            const time = document.querySelector('input[name="time"]:checked');
+            const time = document.getElementById('selectedTime').value;
             document.getElementById('toStep3').disabled = !(location && date && time);
             
             // Update summary
@@ -326,14 +371,20 @@
             if (date && time) {
                 const dateObj = new Date(date);
                 const dateStr = dateObj.toLocaleDateString('vi-VN', {weekday: 'long', year: 'numeric', month: 'long', day: 'numeric'});
-                document.getElementById('summaryDateTimeText').textContent = dateStr + ' - ' + time.value;
+                document.getElementById('summaryDateTimeText').textContent = dateStr + ' - ' + time;
                 document.getElementById('summaryDateTime').style.display = 'block';
             }
         }
 
-        document.getElementById('locationId').addEventListener('change', validateStep2);
-        document.getElementById('date').addEventListener('change', validateStep2);
-        document.querySelectorAll('input[name="time"]').forEach(r => r.addEventListener('change', validateStep2));
+        // Event listeners cho load slots
+        document.getElementById('locationId').addEventListener('change', function() {
+            loadTimeSlots();
+            validateStep2();
+        });
+        document.getElementById('date').addEventListener('change', function() {
+            loadTimeSlots();
+            validateStep2();
+        });
 
         // Set min date to today
         const today = new Date().toISOString().split('T')[0];

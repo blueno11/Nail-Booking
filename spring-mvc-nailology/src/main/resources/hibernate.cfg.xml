@@ -9,7 +9,7 @@
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
         <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/nailology?useSSL=false&amp;serverTimezone=UTC&amp;useUnicode=true&amp;characterEncoding=UTF-8</property>
         <property name="hibernate.connection.username">root</property>
-        <property name="hibernate.connection.password">12345</property>
+        <property name="hibernate.connection.password">admin</property>
 
         <!-- JDBC connection pool settings -->
         <property name="hibernate.connection.pool_size">10</property>
@@ -24,15 +24,17 @@
         <!-- Drop and re-create the database schema on startup -->
         <property name="hibernate.hbm2ddl.auto">update</property>
 
-        <!-- Current session context -->
-        <property name="hibernate.current_session_context_class">thread</property>
-
         <!-- Entity mappings -->
         <mapping class="com.nailology.entity.Location"/>
         <mapping class="com.nailology.entity.ServiceEntity"/>
         <mapping class="com.nailology.entity.GalleryItem"/>
         <mapping class="com.nailology.entity.Announcement"/>
         <mapping class="com.nailology.entity.ContactMessage"/>
+        <mapping class="com.nailology.entity.Staff"/>
+        <mapping class="com.nailology.entity.Customer"/>
+        <mapping class="com.nailology.entity.Booking"/>
+        <mapping class="com.nailology.entity.Notification"/>
+        <mapping class="com.nailology.entity.StaffAvailability"/>
 
     </session-factory>
 </hibernate-configuration>

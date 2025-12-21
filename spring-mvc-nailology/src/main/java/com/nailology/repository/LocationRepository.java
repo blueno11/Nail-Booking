@@ -20,6 +20,12 @@ public class LocationRepository {
         return sessionFactory.getCurrentSession();
     }
 
+    public List<Location> findAll() {
+        Query<Location> query = getCurrentSession()
+            .createQuery("FROM Location ORDER BY displayOrder", Location.class);
+        return query.getResultList();
+    }
+
     public List<Location> findAllActive() {
         Query<Location> query = getCurrentSession()
             .createQuery("FROM Location WHERE status = 'ACTIVE' ORDER BY displayOrder", Location.class);
@@ -30,5 +36,15 @@ public class LocationRepository {
         Location location = getCurrentSession().get(Location.class, id);
         return Optional.ofNullable(location);
     }
-    
+
+    public void save(Location location) {
+        getCurrentSession().saveOrUpdate(location);
+    }
+
+    public void delete(Long id) {
+        Location location = getCurrentSession().get(Location.class, id);
+        if (location != null) {
+            getCurrentSession().delete(location);
+        }
+    }
 }

@@ -39,6 +39,14 @@ public class StaffRepository {
         return currentSession().get(Staff.class, id);
     }
 
+    public Staff findByEmail(String email) {
+        List<Staff> results = currentSession()
+            .createQuery("FROM Staff WHERE email = :email", Staff.class)
+            .setParameter("email", email)
+            .list();
+        return results.isEmpty() ? null : results.get(0);
+    }
+
     public void save(Staff staff) {
         currentSession().saveOrUpdate(staff);
     }

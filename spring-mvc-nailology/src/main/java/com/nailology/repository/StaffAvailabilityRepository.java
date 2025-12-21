@@ -25,6 +25,22 @@ public class StaffAvailabilityRepository {
                 .list();
     }
 
+    /**
+     * Tìm lịch rảnh của nhân viên theo chi nhánh và ngày trong tuần
+     */
+    public List<StaffAvailability> findByLocationAndDayOfWeek(Long locationId, int dayOfWeek) {
+        String hql = "SELECT sa FROM StaffAvailability sa " +
+                     "JOIN sa.staff s " +
+                     "JOIN s.locations loc " +
+                     "WHERE loc.id = :locationId AND sa.dayOfWeek = :dayOfWeek " +
+                     "AND s.status = 'ACTIVE' " +
+                     "ORDER BY sa.startTime";
+        return currentSession().createQuery(hql, StaffAvailability.class)
+                .setParameter("locationId", locationId)
+                .setParameter("dayOfWeek", dayOfWeek)
+                .list();
+    }
+
     public StaffAvailability findById(Long id) {
         return currentSession().get(StaffAvailability.class, id);
     }

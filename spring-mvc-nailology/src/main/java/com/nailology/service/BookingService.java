@@ -33,6 +33,12 @@ public class BookingService {
     @Autowired
     private ServiceRepository serviceRepository;
 
+    @Autowired
+    private BookingAvailabilityService availabilityService;
+
+    @Autowired
+    private NotificationService notificationService;
+
     @Transactional(readOnly = true)
     public List<Service> getAllServices() {
         List<ServiceEntity> entities = serviceRepository.findAll();
@@ -56,21 +62,29 @@ public class BookingService {
         booking.setMessage(form.getMessage());
 
         // Set location
-        if (form.getLocationId() != null) {
-            Location location = locationRepository.findById(form.getLocationId())
-                .orElseThrow(() -> new RuntimeException("Location not found"));
-            booking.setLocation(location);
+        if (form.getLocationId() == null) {
+            throw new RuntimeException("Vui lòng chọn chi nhánh");
         }
+        Location location = locationRepository.findById(form.getLocationId())
+            .orElseThrow(() -> new RuntimeException("Chi nhánh không tồn tại"));
+        booking.setLocation(location);
 
         // Parse date and time
-        if (form.getDate() != null && !form.getDate().isEmpty()) {
-            booking.setBookingDate(LocalDate.parse(form.getDate()));
+        if (form.getDate() == null || form.getDate().isEmpty()) {
+            throw new RuntimeException("Vui lòng chọn ngày hẹn");
         }
-        if (form.getTime() != null && !form.getTime().isEmpty()) {
-            booking.setBookingTime(LocalTime.parse(form.getTime()));
+        if (form.getTime() == null || form.getTime().isEmpty()) {
+            throw new RuntimeException("Vui lòng chọn giờ hẹn");
         }
+        
+        LocalDate bookingDate = LocalDate.parse(form.getDate());
+        LocalTime bookingTime = LocalTime.parse(form.getTime());
+        
+        booking.setBookingDate(bookingDate);
+        booking.setBookingTime(bookingTime);
 
-        // Process services
+        // Process services và tính duration
+        int totalDuration = 60; // default
         if (form.getSelectedServiceIds() != null && !form.getSelectedServiceIds().isEmpty()) {
             List<Long> serviceIds = form.getSelectedServiceIds().stream()
                 .map(Long::valueOf).collect(Collectors.toList());
@@ -81,18 +95,29 @@ public class BookingService {
             BigDecimal total = services.stream()
                 .map(s -> s.getStartingPrice() != null ? s.getStartingPrice() : BigDecimal.ZERO)
                 .reduce(BigDecimal.ZERO, BigDecimal::add);
-            int duration = services.stream()
+            totalDuration = services.stream()
                 .mapToInt(s -> s.getDurationMinutes() != null ? s.getDurationMinutes() : 0)
                 .sum();
+            if (totalDuration == 0) totalDuration = 60;
 
             booking.setServiceIds(ids);
             booking.setServiceNames(names);
             booking.setTotalPrice(total);
-            booking.setTotalDurationMinutes(duration);
+            booking.setTotalDurationMinutes(totalDuration);
+        }
+
+        // Validate slot availability
+        if (!availabilityService.isSlotAvailable(form.getLocationId(), bookingDate, bookingTime, totalDuration)) {
+            throw new RuntimeException("Khung giờ này đã được đặt hoặc không khả dụng. Vui lòng chọn giờ khác.");
         }
 
         booking.setStatus(BookingStatus.PENDING);
-        return bookingRepository.save(booking);
+        Booking savedBooking = bookingRepository.save(booking);
+        
+        // Gửi thông báo cho nhân viên tại chi nhánh
+        notificationService.notifyNewBooking(savedBooking);
+        
+        return savedBooking;
     }
 
     @Transactional(readOnly = true)
@@ -144,6 +169,70 @@ public class BookingService {
         booking.setStatus(BookingStatus.CANCELLED);
         bookingRepository.save(booking);
     }
+
+    @Transactional(readOnly = true)
+    public Booking findById(Long id) {
+        return bookingRepository.findById(id).orElse(null);
+    }
+
+    @Transactional
+    public Booking confirmBooking(Long id, Long confirmedByStaffId) {
+        Booking booking = bookingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Booking not found"));
+        booking.setStatus(BookingStatus.CONFIRMED);
+        booking.setConfirmedByStaffId(confirmedByStaffId);
+        booking.setConfirmedAt(java.time.LocalDateTime.now());
+        return bookingRepository.save(booking);
+    }
+
+    @Transactional
+    public Booking assignStaff(Long bookingId, com.nailology.entity.Staff staff) {
+        Booking booking = bookingRepository.findById(bookingId)
+            .orElseThrow(() -> new RuntimeException("Booking not found"));
+        booking.setAssignedStaff(staff);
+        Booking saved = bookingRepository.save(booking);
+        notificationService.notifyBookingAssigned(saved, staff);
+        return saved;
+    }
+
+    @Transactional
+    public Booking completeBooking(Long id) {
+        Booking booking = bookingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Booking not found"));
+        booking.setStatus(BookingStatus.COMPLETED);
+        return bookingRepository.save(booking);
+    }
+
+    @Transactional
+    public Booking cancelBookingById(Long id) {
+        Booking booking = bookingRepository.findById(id)
+            .orElseThrow(() -> new RuntimeException("Booking not found"));
+        booking.setStatus(BookingStatus.CANCELLED);
+        Booking saved = bookingRepository.save(booking);
+        notificationService.notifyBookingCancelled(saved);
+        return saved;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Booking> findBookingsByStaffLocations(Long staffId, String status, String date) {
+        // Lấy danh sách location IDs của staff
+        com.nailology.entity.Staff staff = staffService.getById(staffId);
+        if (staff == null || staff.getLocations().isEmpty()) {
+            return new ArrayList<>();
+        }
+        List<Long> locationIds = staff.getLocations().stream()
+            .map(loc -> loc.getId()).collect(Collectors.toList());
+        
+        return bookingRepository.findByLocationIdsAndFilters(locationIds, status, date);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Booking> findByAssignedStaff(Long staffId) {
+        return bookingRepository.findByAssignedStaffId(staffId);
+    }
+
+    @Autowired
+    private StaffService staffService;
 
     public List<String> getAvailableTimeSlots() {
         List<String> slots = new ArrayList<>();

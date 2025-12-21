@@ -2,6 +2,7 @@ package com.nailology.controller;
 
 import com.nailology.entity.Staff;
 import com.nailology.entity.StaffAvailability;
+import com.nailology.service.LocationService;
 import com.nailology.service.StaffAvailabilityService;
 import com.nailology.service.StaffService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,7 +11,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import java.util.List;
 
 @Controller
 @RequestMapping("/admin/staff")
@@ -21,6 +22,9 @@ public class AdminStaffController {
 
     @Autowired
     private StaffAvailabilityService availabilityService;
+
+    @Autowired
+    private LocationService locationService;
 
     // === DANH SÁCH NHÂN VIÊN ===
     @GetMapping({"", "/"})
@@ -36,11 +40,7 @@ public class AdminStaffController {
     public String edit(@RequestParam(required = false) Long id, Model model) {
         Staff staff = (id == null || id == 0) ? new Staff() : staffService.getById(id);
         model.addAttribute("staff", staff);
-        
-        // Tạm thời trả về list rỗng vì phần chi nhánh do người khác làm
-        // Khi team khác hoàn thiện, bạn chỉ cần thêm lại LocationService là xong
-        model.addAttribute("locationList", Collections.emptyList());
-        
+        model.addAttribute("locationList", locationService.getAll());
         return "admin/staff/form";
     }
 
@@ -55,8 +55,8 @@ public class AdminStaffController {
 
     // === LƯU NHÂN VIÊN ===
     @PostMapping("/save")
-    public String save(Staff staff) {
-        staffService.save(staff);
+    public String save(Staff staff, @RequestParam(required = false) List<Long> locationIds) {
+        staffService.save(staff, locationIds);
         return "redirect:/admin/staff";
     }
 

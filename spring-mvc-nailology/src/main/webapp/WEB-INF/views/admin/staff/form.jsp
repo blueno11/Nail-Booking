@@ -58,11 +58,6 @@
             <form action="${pageContext.request.contextPath}/admin/staff/save" method="post">
                 <input type="hidden" name="id" value="${staff.id}"/>
 
-                <!-- Trick bind checkbox ManyToMany -->
-                <c:forEach items="${staff.locations}" var="selectedLoc">
-                    <input type="hidden" name="_locations" value="${selectedLoc.id}"/>
-                </c:forEach>
-
                 <div class="form-group">
                     <label>Tên nhân viên *</label>
                     <input type="text" name="name" value="${staff.name}" required/>
@@ -74,8 +69,14 @@
                 </div>
 
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" name="email" value="${staff.email}"/>
+                    <label>Email *</label>
+                    <input type="email" name="email" value="${staff.email}" required/>
+                    <small style="color:#666">Dùng để đăng nhập hệ thống</small>
+                </div>
+
+                <div class="form-group">
+                    <label>Mật khẩu ${staff.id == null || staff.id == 0 ? '*' : '(để trống nếu không đổi)'}</label>
+                    <input type="password" name="password" placeholder="${staff.id != null && staff.id != 0 ? '••••••••' : 'Nhập mật khẩu'}"/>
                 </div>
 
                 <div class="form-group">
@@ -87,6 +88,14 @@
                 </div>
 
                 <div class="form-group">
+                    <label>Vai trò</label>
+                    <select name="role">
+                        <option value="STAFF" ${staff.role == 'STAFF' || staff.role == null ? 'selected' : ''}>Nhân viên (Staff)</option>
+                        <option value="ADMIN" ${staff.role == 'ADMIN' ? 'selected' : ''}>Quản trị viên (Admin)</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
                     <label>Chi nhánh làm việc</label>
                     <div class="checkbox-group">
                         <c:if test="${empty locationList}">
@@ -94,11 +103,11 @@
                         </c:if>
                         <c:forEach items="${locationList}" var="loc">
                             <div class="checkbox-item">
-                                <input type="checkbox" name="locations" value="${loc.id}" id="loc${loc.id}"
+                                <input type="checkbox" name="locationIds" value="${loc.id}" id="loc${loc.id}"
                                        <c:forEach items="${staff.locations}" var="selectedLoc">
                                            <c:if test="${selectedLoc.id == loc.id}">checked</c:if>
                                        </c:forEach> />
-                                <label for="loc${loc.id}">${loc.name} (${loc.suburb})</label>
+                                <label for="loc${loc.id}" style="display:inline; font-weight:normal;">${loc.name} <c:if test="${not empty loc.suburb}">(${loc.suburb})</c:if></label>
                             </div>
                         </c:forEach>
                     </div>

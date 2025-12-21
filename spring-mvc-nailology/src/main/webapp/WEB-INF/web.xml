@@ -50,6 +50,34 @@
     </filter-mapping>
     <!-- === KẾT THÚC THÊM FILTER === -->
 
+    <!-- 
+    ============================================
+    FILTER PHÂN QUYỀN (BẬT KHI CẦN BẢO MẬT)
+    ============================================
+    Uncomment các filter bên dưới khi muốn bật phân quyền:
+    - StaffAuthFilter: Bảo vệ /staff/* (yêu cầu đăng nhập)
+    - AdminAuthFilter: Bảo vệ /admin/* (yêu cầu role ADMIN)
+    
+    <filter>
+        <filter-name>staffAuthFilter</filter-name>
+        <filter-class>com.nailology.filter.StaffAuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>staffAuthFilter</filter-name>
+        <url-pattern>/staff/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>adminAuthFilter</filter-name>
+        <filter-class>com.nailology.filter.AdminAuthFilter</filter-class>
+    </filter>
+    <filter-mapping>
+        <filter-name>adminAuthFilter</filter-name>
+        <url-pattern>/admin/*</url-pattern>
+    </filter-mapping>
+    ============================================
+    -->
+
     <!-- Spring MVC DispatcherServlet -->
     <servlet>
         <servlet-name>dispatcher</servlet-name>

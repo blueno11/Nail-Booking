@@ -25,6 +25,12 @@ public class Staff {
     @Column(name = "status", length = 20)
     private String status = "ACTIVE"; // ACTIVE, INACTIVE
 
+    @Column(name = "role", length = 20)
+    private String role = "STAFF"; // STAFF, ADMIN
+
+    @Column(name = "password", length = 255)
+    private String password;
+
     @Column(name = "display_order")
     private Integer displayOrder = 0;
 
@@ -61,6 +67,12 @@ public class Staff {
 
     public Integer getDisplayOrder() { return displayOrder; }
     public void setDisplayOrder(Integer displayOrder) { this.displayOrder = displayOrder; }
+
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
     public Set<Location> getLocations() { return locations; }
     public void setLocations(Set<Location> locations) { this.locations = locations; }
