@@ -134,6 +134,12 @@
 
                 <div class="detail-actions">
                     <a href="${pageContext.request.contextPath}/booking/manage" class="btn btn-secondary">← Quay lại</a>
+                    <c:if test="${(booking.status == 'PENDING' || booking.status == 'CONFIRMED') && !isPaid}">
+        <a href="${pageContext.request.contextPath}/payment/create?bookingId=${booking.id}"
+           class="btn btn-success">
+            💳 Thanh Toán
+        </a>
+    </c:if>
                     <c:if test="${booking.status == 'PENDING' || booking.status == 'CONFIRMED'}">
                         <form action="${pageContext.request.contextPath}/booking/cancel/${booking.bookingCode}" 
                               method="post" style="display:inline;"
