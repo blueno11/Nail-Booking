@@ -146,7 +146,7 @@
     </div>
 
     <!-- Lọc + tìm kiếm -->
-    <form action="${pageContext.request.contextPath}/payment/manage" method="get" class="filter-box">
+    <form action="${pageContext.request.contextPath}/payment/search" method="post" class="filter-box">
         <select name="status">
             <option value="">-- Tất cả trạng thái --</option>
             <c:forEach items="${paymentStatuses}" var="st">

@@ -1,5 +1,6 @@
 package com.nailology.repository;
 
+import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -147,12 +148,12 @@ public class PaymentRepository {
 	public Double sumCompletedPaymentsByDateRange(LocalDateTime startDate, LocalDateTime endDate) {
 		String hql = "SELECT COALESCE(SUM(p.amount), 0) FROM Payment p "
 				+ "WHERE p.status = :status AND p.paidAt BETWEEN :startDate AND :endDate";
-		Query<Double> query = getCurrentSession().createQuery(hql, Double.class);
+		Query<BigDecimal> query = getCurrentSession().createQuery(hql, BigDecimal.class);
 		query.setParameter("status", PaymentStatus.COMPLETED);
 		query.setParameter("startDate", startDate);
 		query.setParameter("endDate", endDate);
-		Double result = query.uniqueResult();
-		return result != null ? result : 0.0;
+		BigDecimal result = query.uniqueResult();
+		return result != null ? result.doubleValue() : 0.0;
 	}
 
 	/**
@@ -162,13 +163,13 @@ public class PaymentRepository {
 		String hql = "SELECT COALESCE(SUM(p.amount), 0) FROM Payment p "
 				+ "WHERE p.status = :status AND p.paymentMethod = :method "
 				+ "AND p.paidAt BETWEEN :startDate AND :endDate";
-		Query<Double> query = getCurrentSession().createQuery(hql, Double.class);
+		Query<BigDecimal> query = getCurrentSession().createQuery(hql, BigDecimal.class);
 		query.setParameter("status", PaymentStatus.COMPLETED);
 		query.setParameter("method", method);
 		query.setParameter("startDate", startDate);
 		query.setParameter("endDate", endDate);
-		Double result = query.uniqueResult();
-		return result != null ? result : 0.0;
+		BigDecimal result = query.uniqueResult();
+		return result != null ? result.doubleValue() : 0.0;
 	}
 
 	/**
@@ -278,9 +279,9 @@ public class PaymentRepository {
 	 */
 	public Double getTotalRevenue() {
 		String hql = "SELECT COALESCE(SUM(p.amount), 0) FROM Payment p WHERE p.status = :status";
-		Query<Double> query = getCurrentSession().createQuery(hql, Double.class);
+		Query<BigDecimal> query = getCurrentSession().createQuery(hql, BigDecimal.class);
 		query.setParameter("status", PaymentStatus.COMPLETED);
-		Double result = query.uniqueResult();
-		return result != null ? result : 0.0;
+		BigDecimal result = query.uniqueResult();
+		return result != null ? result.doubleValue() : 0.0;
 	}
 }
